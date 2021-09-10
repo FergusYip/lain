@@ -286,17 +286,24 @@ local function do_fair(p, orientation)
         --   |   |   | 4 |      |   | 3 | 5 |
         --   +---+---+---+      +---+---+---+
 
+        reversed = {}
+        for i=#cls, 1, -1 do
+            reversed[#reversed+1] = cls[i]
+        end
+
         if #cls < num_x then
             -- Less clients than the number of columns, let's center it!
             for i = 1, #cls do
                 local col_width = wa.width / #cls
-                local g = { y = wa.y }
+                local g = {
+                    x = (i - 1) * col_width,
+                    y = wa.y
+                }
                 g.width  = col_width
                 g.height = wa.height
                 if g.width < 1 then g.width = 1 end
                 if g.height < 1 then g.height = 1 end
-                g.x = (i - 1) * col_width
-                p.geometries[cls[i]] = g
+                p.geometries[reversed[i]] = g
             end
         else
             -- More clients than the number of columns, let's arrange it!
@@ -308,7 +315,7 @@ local function do_fair(p, orientation)
             if g.height < 1 then g.height = 1 end
             g.x = wa.x
             g.y = wa.y
-            p.geometries[cls[1]] = g
+            p.geometries[reversed[1]] = g
 
             -- Treat the other clients
 
@@ -356,7 +363,7 @@ local function do_fair(p, orientation)
                     g.width = width
                     if g.width < 1 then g.width = 1 end
                     if g.height < 1 then g.height = 1 end
-                    p.geometries[cls[nclient]] = g
+                    p.geometries[reversed[nclient]] = g
                     nclient = nclient + 1
                     wy = wy + height
                 end
@@ -367,7 +374,7 @@ local function do_fair(p, orientation)
                 g.width = width
                 if g.width < 1 then g.width = 1 end
                 if g.height < 1 then g.height = 1 end
-                p.geometries[cls[nclient]] = g
+                p.geometries[reversed[nclient]] = g
                 nclient = nclient + 1
                 wx = wx + width
             end
