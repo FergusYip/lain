@@ -296,25 +296,22 @@ local function do_fair(p, orientation)
             for i = 1, #cls do
                 local col_width = wa.width / #cls
                 local g = {
-                    x = (i - 1) * col_width,
-                    y = wa.y
+                    x = wa.x + (i - 1) * col_width, 
+                    y = wa.y,
+                    width  = math.max(col_width, 1),
+                    height = math.max(wa.height, 1)
                 }
-                g.width  = col_width
-                g.height = wa.height
-                if g.width < 1 then g.width = 1 end
-                if g.height < 1 then g.height = 1 end
                 p.geometries[reversed[i]] = g
             end
         else
             -- More clients than the number of columns, let's arrange it!
             -- Master client deserves a special treatement
-            local g = {}
-            g.width = wa.width - (num_x - 1)*width
-            g.height = wa.height
-            if g.width < 1 then g.width = 1 end
-            if g.height < 1 then g.height = 1 end
-            g.x = wa.x
-            g.y = wa.y
+            local g = {
+                width = math.max(wa.width - (num_x - 1) * width, 1),
+                height = math.max(wa.height, 1),
+                x = wa.x,
+                y = wa.y
+            }
             p.geometries[reversed[1]] = g
 
             -- Treat the other clients
